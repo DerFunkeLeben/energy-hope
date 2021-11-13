@@ -1,0 +1,115 @@
+@import "fonts";
+
+body {
+  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+.wrapper {
+  padding: 80px;
+}
+
+.suggestions__overlay {
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  display: none;
+
+  &.active {
+    display: block;
+  }
+}
+
+.address__label,
+.suggestions__wrapper {
+  display: inline-block;
+  padding-left: 15px;
+}
+
+.address__label {
+  text-align: right;
+  font-weight: bold;
+  padding-right: 8px;
+  font-size: 12px;
+  width: 130px;
+  white-space: nowrap;
+}
+
+.address__title {
+  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: normal;
+  text-align: left;
+  color: #369;
+  padding-bottom: 4px;
+}
+
+.input__data {
+  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+  height: 20px;
+  font-size: 14px;
+  width: 450px;
+}
+
+.btn_send {
+  border: 1px solid #c5dbec;
+  background-color: #dfeffc;
+  font-weight: bold;
+  color: #2e6e9e;
+  text-align: center;
+  font-size: 14px;
+  width: 125px;
+  cursor: pointer;
+margin: 30px auto 30px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #ffffff;
+  }
+}
+
+.fias_data {
+  border: 1px solid #c5dbec;
+  background-color: #dfeffc;
+  width: 100%;
+  color: #2e6e9e;
+  font-size: 12px;
+}
+
+.input__container {
+  padding: 10px;
+}
+
+.suggestions {
+  position: absolute;
+  display: none;
+  overflow: hidden;
+  width: 450px;
+  flex-direction: column;
+  padding: 0;
+  background-color: white;
+  border: 1px solid #000;
+
+  .suggestion__option {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+    height: 25px;
+    box-sizing: border-box;
+    align-items: center;
+    padding: 0 20% 0 8%;
+    border-bottom: 1px solid #999;
+    white-space: nowrap;
+    font-size: 14px;
+    background-color: white;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #99999999;
+    }
+  }
+
+  &.active {
+    display: flex;
+  }
+}

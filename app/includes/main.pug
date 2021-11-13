@@ -1,0 +1,32 @@
+//- In 'includes' all paths to assets should be relative to the index.pug file,
+//- like so './images/image.jpg',
+//- and not '../images/image.jpg'
+-
+
+  const captions = ['Регион*:', 'Район:', 'Населенный пункт:', 'Улица:', 'Дом:']
+  const ids = ['region', 'area', 'settlement', 'street', 'house']
+
+.wrapper 
+  h2.address__title
+    |Адрес постоянной регистрации
+    
+  .suggestions__overlay
+
+  - for (let i = 0; i < 5; i++)  
+      div(class=`input__container input__container-${i+1}`)  
+        label.address__label(for=`${ids[i]}`)= captions[i] 
+        .suggestions__wrapper
+          
+          input(id=`${ids[i]}`).input__data
+          div(class=`suggestions suggestions-${ids[i]}`)  
+
+  .btn_send   
+    | Отправить 
+
+  .fias_data 
+    
+
+
+
+
+  
