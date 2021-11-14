@@ -23,12 +23,11 @@ async function sendRequest() {
     settlement: document.querySelector("#settlement").value,
     street: document.querySelector("#street").value,
     house: document.querySelector("#house").value,
-    flat: document.querySelector("#flat").value,
   };
   const query = Object.values(fields).join(" ");
-  const result = await getData(query, "region", "flat");
+  const result = await getData(query, "region", "house");
   suggestions = result.suggestions;
-console.log(suggestions)
+
   summary_text.innerHTML = `По этому адресу найдено записей в ФИАС: ${
     suggestions.length >= 10 ? ">10" : suggestions.length
   } <br> ${

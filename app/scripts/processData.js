@@ -79,7 +79,7 @@ async function areaOnChange(e) {
 }
 
 async function settlementOnChange(e) {
-  if (!location.region.isReady ) {
+  if (!location.region.isReady) {
     const result = await getData($region.value + $area.value, "region", "area");
     if (result.suggestions.length) {
       const [firstPick] = result.suggestions;
@@ -115,7 +115,7 @@ async function houseOnChange(e) {
     !(location.settlement.isReady || location.city.isReady)
   )
     return;
-  
+
   const result = await getData(this.value, "house", "house", location);
   location.house.isReady = false;
   currInput = e.target;
@@ -132,9 +132,8 @@ function removeNonCity(suggestions) {
 
 function selectManager(suggestions, suggestionsDOM) {
   const selectOptions = suggestions.map((sug) => {
-    //
     if (currInput.id === "settlement") {
-      const {city_with_type, settlement_with_type} = sug.data
+      const { city_with_type, settlement_with_type } = sug.data;
       return [city_with_type, settlement_with_type].join(" ");
     }
     if (currInput.id === "house") return sug.value;
@@ -157,6 +156,7 @@ function selectManager(suggestions, suggestionsDOM) {
       const currId = suggestions[index].data[`${currInput.id}_fias_id`];
       option.id = currId;
     }
+    if (option.id === "null") return;
 
     option.textContent = text;
     content.append(option);
@@ -164,9 +164,8 @@ function selectManager(suggestions, suggestionsDOM) {
 
   (function insertSelectOptions() {
     suggestionsDOM.innerHTML = "";
-    selectOptions.map((option, index) =>
-      renderOption(suggestionsDOM, option, index)
-    );
+    const options = [...new Set(selectOptions)];
+    options.map((option, index) => renderOption(suggestionsDOM, option, index));
   })();
 }
 
