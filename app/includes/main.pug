@@ -3,8 +3,8 @@
 //- and not '../images/image.jpg'
 -
 
-  const captions = ['Регион*:', 'Район:', 'Населенный пункт:', 'Улица:', 'Дом:']
-  const ids = ['region', 'area', 'settlement', 'street', 'house']
+  const captions = ['Регион*:', 'Район:', 'Населенный пункт:', 'Улица:', 'Дом:', 'Квартира:', 'Индекс:']
+  const ids = ['region', 'area', 'settlement', 'street', 'house', 'flat', 'postal_code']
 
 .wrapper 
   h2.address__title
@@ -12,7 +12,7 @@
     
   .suggestions__overlay
 
-  - for (let i = 0; i < 5; i++)  
+  - for (let i = 0; i < captions.length; i++)  
       div(class=`input__container input__container-${i+1}`)  
         label.address__label(for=`${ids[i]}`)= captions[i] 
         .suggestions__wrapper
@@ -22,6 +22,10 @@
 
   .btn_send   
     | Отправить 
+
+  .summary_container
+    .summary_text
+
 
   .fias_data 
     

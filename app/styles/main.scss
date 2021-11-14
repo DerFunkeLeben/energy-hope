@@ -6,6 +6,7 @@ body {
 
 .wrapper {
   padding: 80px;
+  width: 50%;
 }
 
 .suggestions__overlay {
@@ -49,6 +50,8 @@ body {
   height: 20px;
   font-size: 14px;
   width: 450px;
+  position: relative;
+  z-index: 1;
 }
 
 .btn_send {
@@ -60,24 +63,40 @@ body {
   font-size: 14px;
   width: 125px;
   cursor: pointer;
-margin: 30px auto 30px;
+  margin: 30px auto 30px;
   transition: background-color 0.3s;
 
   &:hover {
     background-color: #ffffff;
   }
 }
+.summary_container {
+  font-weight: 600;
+}
 
-.fias_data {
+.fias_data,
+.summary_container {
   border: 1px solid #c5dbec;
   background-color: #dfeffc;
   width: 100%;
   color: #2e6e9e;
   font-size: 12px;
+  display: none;
+  animation: fadeIn 0.5s both;
+  padding: 10px;
+
+  &.active {
+    display: block;
+  }
 }
 
 .input__container {
   padding: 10px;
+}
+
+#postal_code {
+  border: none;
+  pointer-events: none;
 }
 
 .suggestions {
@@ -89,6 +108,8 @@ margin: 30px auto 30px;
   padding: 0;
   background-color: white;
   border: 1px solid #000;
+  z-index: 2;
+  animation: fadeIn 0.3s both;
 
   .suggestion__option {
     display: flex;
@@ -103,7 +124,7 @@ margin: 30px auto 30px;
     font-size: 14px;
     background-color: white;
     transition: background-color 0.3s;
-
+    cursor: pointer;
     &:hover {
       background-color: #99999999;
     }
@@ -111,5 +132,14 @@ margin: 30px auto 30px;
 
   &.active {
     display: flex;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
   }
 }
