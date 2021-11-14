@@ -66,7 +66,7 @@ const commonConfig = merge([
     entry: `${paths.app}/scripts`,
     output: {
       path: paths.build,
-      publicPath: parts.publicPath
+      publicPath: '.' + parts.publicPath
     },
     stats: {
       warningsFilter: warning => warning.includes('entrypoint size limit'),

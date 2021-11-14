@@ -1,8 +1,8 @@
 {
-  "main.css": "/styles/0.8172ebfa.css",
-  "main.js": "/scripts/main.87dcfabc.js",
-  "runtime.js": "/scripts/runtime.5892a5d2.js",
-  "../stats.json": "/../stats.json",
-  "fonts/main.scss": "/fonts/open-sans-regular.9bd6fd3f.woff2",
-  "index.html": "/index.html"
+  "main.css": "./styles/0.4679b2d7.css",
+  "main.js": "./scripts/main.0043586f.js",
+  "runtime.js": "./scripts/runtime.2bbf91cf.js",
+  "../stats.json": "./../stats.json",
+  "fonts/main.scss": "./fonts/open-sans-regular.9bd6fd3f.woff2",
+  "index.html": "./index.html"
 }
