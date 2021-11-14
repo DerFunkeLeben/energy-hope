@@ -29,6 +29,7 @@ const location = {
   },
   city: {
     id: "",
+    isReady: false,
   },
   settlement: {
     id: "",
@@ -56,9 +57,9 @@ suggestionsStreet.addEventListener("click", suggestionPicked);
 suggestionsHouse.addEventListener("click", suggestionPicked);
 
 async function regionOnChange(e) {
-  const result = await getData(this.value, "region", "region");
   location.region.isReady = false;
   currInput = e.target;
+  const result = await getData(this.value, "region", "region");
   selectManager(result.suggestions, suggestionsRegion);
 }
 
@@ -69,7 +70,6 @@ async function areaOnChange(e) {
       const [firstPick] = result.suggestions;
       location.region.id = firstPick.data.region_fias_id;
       location.region.isReady = true;
-      
     }
   }
   const result = await getData(this.value, "area", "area", location);
@@ -79,45 +79,43 @@ async function areaOnChange(e) {
 }
 
 async function settlementOnChange(e) {
-  if (!location.region.isReady || !location.area.isReady) {
+  if (!location.region.isReady ) {
     const result = await getData($region.value + $area.value, "region", "area");
     if (result.suggestions.length) {
       const [firstPick] = result.suggestions;
       location.region.id = firstPick.data.region_fias_id;
-      location.area.id = firstPick.data.area_fias_id;
       location.region.isReady = true;
-      location.area.isReady = true;
     }
   }
   const result = await getData(this.value, "city", "settlement", location);
   location.settlement.isReady = false;
+  location.city.isReady = false;
   currInput = e.target;
   selectManager(removeNonCity(result.suggestions), suggestionsSettlement);
 }
 
 async function streetOnChange(e) {
+  location.street.isReady = false;
+  currInput = e.target;
+
   if (
     !location.region.isReady ||
-    !location.area.isReady ||
-    !location.settlement.isReady
+    !(location.settlement.isReady || location.city.isReady)
   )
     return;
 
   const result = await getData(this.value, "street", "street", location);
-  location.street.isReady = false;
-  currInput = e.target;
   selectManager(result.suggestions, suggestionsStreet);
 }
 
 async function houseOnChange(e) {
   if (
     !location.region.isReady ||
-    !location.area.isReady ||
-    !location.settlement.isReady
+    !location.street.isReady ||
+    !(location.settlement.isReady || location.city.isReady)
   )
     return;
-  if (location.settlement.isCity && !location.street.isReady) return;
-
+  
   const result = await getData(this.value, "house", "house", location);
   location.house.isReady = false;
   currInput = e.target;
@@ -133,12 +131,11 @@ function removeNonCity(suggestions) {
 }
 
 function selectManager(suggestions, suggestionsDOM) {
-
   const selectOptions = suggestions.map((sug) => {
+    //
     if (currInput.id === "settlement") {
-      console.log(sug)
-      if (!sug.data[`settlement_with_type`]) return sug.data[`city_with_type`];
-      return sug.data[`settlement_with_type`];
+      const {city_with_type, settlement_with_type} = sug.data
+      return [city_with_type, settlement_with_type].join(" ");
     }
     if (currInput.id === "house") return sug.value;
     return sug.data[`${currInput.id}_with_type`];
@@ -150,12 +147,16 @@ function selectManager(suggestions, suggestionsDOM) {
     const option = document.createElement("div");
     option.classList.add("suggestion__option");
 
-    //
-    const currId = suggestions[index].data[`${currInput.id}_fias_id`];
-
-    if (currInput.id === "settlement" && !currId)
-      option.id = suggestions[index].data[`city_fias_id`];
-    else option.id = currId;
+    if (currInput.id === "settlement") {
+      const currIdCity = suggestions[index].data[`city_fias_id`];
+      const currIdSettlement = suggestions[index].data[`settlement_fias_id`];
+      const IdCityToRender = currIdCity ? currIdCity : "null";
+      const IdSettlementToRender = currIdSettlement ? currIdSettlement : "null";
+      option.id = [IdCityToRender, IdSettlementToRender].join("__");
+    } else {
+      const currId = suggestions[index].data[`${currInput.id}_fias_id`];
+      option.id = currId;
+    }
 
     option.textContent = text;
     content.append(option);
@@ -173,9 +174,26 @@ function suggestionPicked(e) {
   if (e.target.classList.contains("suggestion__option")) {
     const pickedOption = e.target.textContent;
     currInput.value = pickedOption;
-    //
-    location[currInput.id].id = e.target.id;
     location[currInput.id].isReady = true;
+    location[currInput.id].id = e.target.id;
+
+    if (currInput.id === "settlement") {
+      const [IdCity, IdSettlement] = e.target.id.split("__");
+
+      location.city.id = IdCity;
+      location.city.isReady = true;
+      location.settlement.id = IdSettlement;
+      location.settlement.isReady = true;
+
+      if (IdCity === "null") {
+        location.city.id = "";
+        location.city.isReady = false;
+      }
+      if (IdSettlement === "null") {
+        location.settlement.id = "";
+        location.settlement.isReady = false;
+      }
+    }
 
     this.classList.remove("active");
     suggestionsOverlay.classList.remove("active");
