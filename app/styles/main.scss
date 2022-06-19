@@ -95,8 +95,9 @@ body {
 }
 
 #postal_code {
-  border: none;
+  border-color: transparent;
   pointer-events: none;
+  user-select: none;
 }
 
 .suggestions {

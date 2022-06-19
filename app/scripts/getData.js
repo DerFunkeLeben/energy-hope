@@ -1,17 +1,15 @@
 /* eslint-disable */
 
-var url =
-  "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address";
-var token = "dde8a351a7c7874c95d7beab6ee8de9be7c608dc";
+import { URL, TOKEN } from "./constants";
 
-export async function getData(query, from_bound, to_bound, location) {
+async function getData(query, from_bound, to_bound, location) {
   var options = {
     method: "POST",
     mode: "cors",
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
-      Authorization: "Token " + token,
+      Authorization: "Token " + TOKEN,
     },
     body: JSON.stringify({
       query: query,
@@ -21,12 +19,15 @@ export async function getData(query, from_bound, to_bound, location) {
         const res = {};
         console.log(location);
         if (location) {
-          if (location.region.isReady)
+          if (location.region.isReady) {
             res["region_fias_id"] = location.region.id;
-          if (location.area.isReady) res["area_fias_id"] = location.area.id;
-          if (location.street.isReady)
+          }
+          if (location.area.isReady) {
+            res["area_fias_id"] = location.area.id;
+          }
+          if (location.street.isReady) {
             res["street_fias_id"] = location.street.id;
-
+          }
           if (location.settlement.isReady && location.city.isReady) {
             res["settlement_fias_id"] = location.settlement.id;
             res["city_fias_id"] = location.city.id;
@@ -47,10 +48,12 @@ export async function getData(query, from_bound, to_bound, location) {
   };
 
   try {
-    const response = await fetch(url, options);
+    const response = await fetch(URL, options);
     const responseJson = await response.json();
     return responseJson;
   } catch (error) {
     console.error(error);
   }
 }
+
+export default getData;
