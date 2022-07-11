@@ -39,7 +39,7 @@ async function getData(query, from_bound, to_bound, location) {
             res["city_fias_id"] = location.city.id;
           }
         }
-        console.log(res);
+        //console.log(res);
         if (Object.keys(res).length) return [res];
         return null;
       })(),

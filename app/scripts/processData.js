@@ -37,23 +37,66 @@ suggestionsSettlement.addEventListener("click", suggestionPicked);
 suggestionsStreet.addEventListener("click", suggestionPicked);
 suggestionsHouse.addEventListener("click", suggestionPicked);
 
+async function getRegion(value) {
+  const result = await getData(value, FIELDS.REGION, FIELDS.REGION);
+  return result;
+}
+
+async function getArea(value) {
+  const result = await getData(value, FIELDS.AREA, FIELDS.AREA, location);
+  return result;
+}
+
+async function getSettlement(value) {
+  const result = await getData(value, FIELDS.CITY, FIELDS.SETTLEMENT, location);
+  return result;
+}
+
+async function getStreet(value) {
+  const result = await getData(value, FIELDS.STREET, FIELDS.STREET, location);
+  return result;
+}
+
+async function getHouse(value) {
+  const result = await getData(value, FIELDS.HOUSE, FIELDS.HOUSE, location);
+  return result;
+}
+
+function getField(fieldId) {
+  switch (fieldId) {
+    case FIELDS.REGION:
+      return getRegion;
+    case FIELDS.AREA:
+      return getArea;
+    case FIELDS.SETTLEMENT:
+      return getSettlement;
+    case FIELDS.STREET:
+      return getStreet;
+    case FIELDS.HOUSE:
+      return getHouse;
+
+    default:
+      break;
+  }
+}
+
 async function regionOnChange(e) {
   location[FIELDS.REGION].isReady = false;
   currInput = e.target;
-  const result = await getData(this.value, FIELDS.REGION, FIELDS.REGION);
+  const result = await getRegion(this.value);
   selectManager(result.suggestions, suggestionsRegion);
 }
 
 async function areaOnChange(e) {
   if (!location[FIELDS.REGION].isReady) {
-    const result = await getData($region.value, FIELDS.REGION, FIELDS.REGION);
+    const result = await getRegion($region.value);
     if (result.suggestions.length) {
       const [firstPick] = result.suggestions;
       location[FIELDS.REGION].id = firstPick.data.region_fias_id;
       location[FIELDS.REGION].isReady = true;
     }
   }
-  const result = await getData(this.value, FIELDS.AREA, FIELDS.AREA, location);
+  const result = await getArea(this.value);
   location[FIELDS.AREA].isReady = false;
   currInput = e.target;
   selectManager(result.suggestions, suggestionsArea);
@@ -72,12 +115,8 @@ async function settlementOnChange(e) {
       location[FIELDS.REGION].isReady = true;
     }
   }
-  const result = await getData(
-    this.value,
-    FIELDS.CITY,
-    FIELDS.SETTLEMENT,
-    location
-  );
+
+  const result = await getSettlement(this.value);
   location[FIELDS.SETTLEMENT].isReady = false;
   location[FIELDS.CITY].isReady = false;
   currInput = e.target;
@@ -94,12 +133,7 @@ async function streetOnChange(e) {
   )
     return;
 
-  const result = await getData(
-    this.value,
-    FIELDS.STREET,
-    FIELDS.STREET,
-    location
-  );
+  const result = await getStreet(this.value);
   selectManager(result.suggestions, suggestionsStreet);
 }
 
@@ -111,12 +145,7 @@ async function houseOnChange(e) {
   )
     return;
 
-  const result = await getData(
-    this.value,
-    FIELDS.HOUSE,
-    FIELDS.HOUSE,
-    location
-  );
+  const result = await getHouse(this.value);
   location[FIELDS.HOUSE].isReady = false;
   currInput = e.target;
   selectManager(result.suggestions, suggestionsHouse);
@@ -177,16 +206,32 @@ function selectManager(suggestions, suggestionsDOM) {
   })();
 }
 
-function suggestionPicked(e) {
+async function suggestionPicked(e) {
   if (!e.target.classList.contains("suggestion__option")) return;
 
   const pickedOption = e.target.textContent;
   currInput.value = pickedOption;
   location[currInput.id].isReady = true;
-  location[currInput.id].id = e.target.id;
+
+  const getCurrInputData = getField(currInput.id);
+  const result = await getCurrInputData(pickedOption);
+  try {
+    const currId = result.suggestions[0].data[`${currInput.id}_fias_id`];
+    location[currInput.id].id = currId;
+  } catch (error) {
+    location[currInput.id].id = e.target.id;
+  }
+  console.log(result);
 
   if (currInput.id === FIELDS.SETTLEMENT) {
-    const [IdCity, IdSettlement] = e.target.id.split("__");
+    let [IdCity, IdSettlement] = e.target.id.split("__");
+
+    try {
+      IdSettlement = result.suggestions[0].data[`settlement_fias_id`];
+      IdCity = result.suggestions[0].data[`city_fias_id`];
+    } catch (error) {
+      console.log(error);
+    }
 
     location[FIELDS.CITY].id = IdCity;
     location[FIELDS.CITY].isReady = true;
